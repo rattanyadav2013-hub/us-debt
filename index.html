@@ -6,175 +6,174 @@
 <title>Real-Time Economic Clock</title>
 <style>
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+box-sizing: border-box;
+margin: 0;
+padding: 0;
 }
 body {
-  background-color: #000;
-  color: #fff;
-  font-family: monospace;
-  padding: 20px;
+background-color: #000;
+color: #fff;
+font-family: monospace;
+padding: 20px;
 }
 header {
-  text-align: center;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #333;
-  padding-bottom: 20px;
+text-align: center;
+margin-bottom: 30px;
+border-bottom: 2px solid #333;
+padding-bottom: 20px;
 }
 h1 {
-  color: #de1f1f;
-  font-size: 2.5rem;
-  text-shadow: 0 0 10px rgba(222, 31, 31, 0.5);
+color: #de1f1f;
+font-size: 2.5rem;
+text-shadow: 0 0 10px rgba(222, 31, 31, 0.5);
 }
 .grid-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+gap: 20px;
+max-width: 1400px;
+margin: 0 auto;
 }
 .clock-card {
-  background: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+background: #111;
+border: 1px solid #333;
+border-radius: 4px;
+padding: 15px;
+text-align: center;
+box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
 }
 .card-title {
-  font-size: 0.9rem;
-  color: #888;
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
+font-size: 0.9rem;
+color: #888;
+text-transform: uppercase;
+margin-bottom: 10px;
+letter-spacing: 1px;
 }
 .card-value {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #00ff00;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+font-size: 1.4rem;
+font-weight: bold;
+color: #00ff00;
+text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+white-space: nowrap;
 }
 .debt .card-value {
-  color: #ff3333;
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
+color: #ff3333;
+text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
 }
 .citizen .card-value {
-  color: #33b5e5;
-  text-shadow: 0 0 5px rgba(51, 181, 229, 0.3);
+color: #33b5e5;
+text-shadow: 0 0 5px rgba(51, 181, 229, 0.3);
 }
 .source-tag {
-  font-size: 0.7rem;
-  color: #555;
-  margin-top: 5px;
-  display: block;
+font-size: 0.7rem;
+color: #555;
+margin-top: 5px;
+display: block;
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>NATIONAL ECONOMIC CLOCK</h1>
+<h1>NATIONAL ECONOMIC CLOCK</h1>
 </header>
 
 <main class="grid-container">
-  <div class="clock-card debt">
-    <div class="card-title">National Debt</div>
-    <div class="card-value" id="national-debt">Loading API...</div>
-    <span class="source-tag" id="debt-date">Source: U.S. Treasury API</span>
-  </div>
+<div class="clock-card debt">
+<div class="card-title">National Debt</div>
+<div class="card-value" id="national-debt">Loading API...</div>
+<span class="source-tag" id="debt-date">Source: U.S. Treasury API</span>
+</div>
 
-  <div class="clock-card citizen">
-    <div class="card-title">Population</div>
-    <div class="card-value" id="population">0</div>
-    <span class="source-tag">Source: Census Estimate</span>
-  </div>
+<div class="clock-card citizen">
+<div class="card-title">Population</div>
+<div class="card-value" id="population">0</div>
+<span class="source-tag">Source: Census Estimate</span>
+</div>
 
-  <div class="clock-card debt">
-    <div class="card-title">Debt Per Citizen</div>
-    <div class="card-value" id="debt-per-citizen">$0</div>
-    <span class="source-tag">Calculated Real-Time</span>
-  </div>
+<div class="clock-card debt">
+<div class="card-title">Debt Per Citizen</div>
+<div class="card-value" id="debt-per-citizen">$0</div>
+<span class="source-tag">Calculated Real-Time</span>
+</div>
 
-  <div class="clock-card">
-    <div class="card-title">Gross Domestic Product</div>
-    <div class="card-value" id="gdp">$0</div>
-    <span class="source-tag">Source: BEA Estimate</span>
-  </div>
+<div class="clock-card">
+<div class="card-title">Gross Domestic Product</div>
+<div class="card-value" id="gdp">$0</div>
+<span class="source-tag">Source: BEA Estimate</span>
+</div>
 </main>
 
 <script>
 const CONFIG = {
-  debt: {
-    baseValue: 38950000000000,
-    ratePerSecond: 120000,
-    baseTime: Date.now()
-  },
-  population: {
-    baseValue: 336200000,
-    ratePerSecond: 0.05,
-    baseTime: new Date("2026-01-01T00:00:00Z").getTime()
-  },
-  gdp: {
-    baseValue: 27500000000000,
-    ratePerSecond: 45000,
-    baseTime: new Date("2026-01-01T00:00:00Z").getTime()
-  }
+debt: {
+baseValue: 38950000000000,
+ratePerSecond: 120000,
+baseTime: Date.now()
+},
+population: {
+baseValue: 336200000,
+ratePerSecond: 0.05,
+baseTime: new Date("2026-01-01T00:00:00Z").getTime()
+},
+gdp: {
+baseValue: 27500000000000,
+ratePerSecond: 45000,
+baseTime: new Date("2026-01-01T00:00:00Z").getTime()
+}
 };
 
 function formatCurrency(value) {
-  return "$" + Math.floor(value).toLocaleString('en-US');
+return "$" + Math.floor(value).toLocaleString('en-US');
 }
 
 function formatNumber(value) {
-  return Math.floor(value).toLocaleString('en-US');
+return Math.floor(value).toLocaleString('en-US');
 }
 
 async function fetchOfficialDebt() {
-  try {
-    const response = await fetch('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?sort=-record_date&page[size]=1');
-    const json = await response.json();
-    if (json && json.data && json.data[0]) {
-      const officialRecord = json.data[0];
-      const officialDebtAmt = parseFloat(officialRecord.tot_pub_debt_out_amt);
-      const recordDateStr = officialRecord.record_date;
-      
-      // FIXED: Using a safe, universal date format for mobile browsers
-      const recordTimeMs = new Date(recordDateStr + "T00:00:00Z").getTime();
-      
-      CONFIG.debt.baseValue = officialDebtAmt;
-      CONFIG.debt.baseTime = recordTimeMs;
-      document.getElementById('debt-date').textContent = "Official API Baseline: " + recordDateStr;
-    }
-  } catch (error) {
-    console.error("API failed to load, using estimates.", error);
-  }
-  updateClocks();
+try {
+const response = await fetch('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?sort=-record_date&page[size]=1');
+const json = await response.json();
+if (json && json.data && json.data[0]) {
+const officialRecord = json.data[0];
+const officialDebtAmt = parseFloat(officialRecord.tot_pub_debt_out_amt);
+const recordDateStr = officialRecord.record_date;
+
+const recordTimeMs = new Date(recordDateStr + "T00:00:00Z").getTime();
+
+CONFIG.debt.baseValue = officialDebtAmt;
+CONFIG.debt.baseTime = recordTimeMs;
+document.getElementById('debt-date').textContent = "Official API Baseline: " + recordDateStr;
+}
+} catch (error) {
+}
+updateClocks();
 }
 
 function updateClocks() {
-  const now = Date.now();
+const now = Date.now();
 
-  const debtElapsedSec = (now - CONFIG.debt.baseTime) / 1000;
-  let currentDebt = CONFIG.debt.baseValue;
-  if (debtElapsedSec > 0) {
-    currentDebt += (debtElapsedSec * CONFIG.debt.ratePerSecond);
-  }
+const debtElapsedSec = (now - CONFIG.debt.baseTime) / 1000;
+let currentDebt = CONFIG.debt.baseValue;
+if (debtElapsedSec > 0) {
+currentDebt += (debtElapsedSec * CONFIG.debt.ratePerSecond);
+}
 
-  const popElapsedSec = (now - CONFIG.population.baseTime) / 1000;
-  const currentPop = CONFIG.population.baseValue + (popElapsedSec * CONFIG.population.ratePerSecond);
+const popElapsedSec = (now - CONFIG.population.baseTime) / 1000;
+const currentPop = CONFIG.population.baseValue + (popElapsedSec * CONFIG.population.ratePerSecond);
 
-  const gdpElapsedSec = (now - CONFIG.gdp.baseTime) / 1000;
-  const currentGdp = CONFIG.gdp.baseValue + (gdpElapsedSec * CONFIG.gdp.ratePerSecond);
+const gdpElapsedSec = (now - CONFIG.gdp.baseTime) / 1000;
+const currentGdp = CONFIG.gdp.baseValue + (gdpElapsedSec * CONFIG.gdp.ratePerSecond);
 
-  const debtPerCitizen = currentDebt / currentPop;
+const debtPerCitizen = currentDebt / currentPop;
 
-  document.getElementById('national-debt').textContent = formatCurrency(currentDebt);
-  document.getElementById('population').textContent = formatNumber(currentPop);
-  document.getElementById('gdp').textContent = formatCurrency(currentGdp);
-  document.getElementById('debt-per-citizen').textContent = formatCurrency(debtPerCitizen);
+document.getElementById('national-debt').textContent = formatCurrency(currentDebt);
+document.getElementById('population').textContent = formatNumber(currentPop);
+document.getElementById('gdp').textContent = formatCurrency(currentGdp);
+document.getElementById('debt-per-citizen').textContent = formatCurrency(debtPerCitizen);
 
-  requestAnimationFrame(updateClocks);
+requestAnimationFrame(updateClocks);
 }
 
 window.addEventListener('DOMContentLoaded', fetchOfficialDebt);
