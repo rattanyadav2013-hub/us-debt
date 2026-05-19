@@ -72,10 +72,6 @@ h1 {
   color: #00d2ff;
   text-shadow: 0 0 5px rgba(0, 210, 255, 0.2);
 }
-.forex .card-value {
-  color: #ffcc00;
-  text-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
-}
 .portfolio .card-value {
   color: #e066ff;
   text-shadow: 0 0 5px rgba(224, 102, 255, 0.2);
@@ -142,12 +138,6 @@ h1 {
     <span class="source-tag">Compounding Real-Time @ 6.30% p.a.</span>
   </div>
 
-  <div class="clock-card forex">
-    <div class="card-title">USD to INR Exchange Rate</div>
-    <div class="card-value" id="usd-inr">Loading API...</div>
-    <span class="source-tag" id="exchange-date">Source: Forex API Baseline</span>
-  </div>
-
   <div class="clock-card debt">
     <div class="card-title">US National Debt</div>
     <div class="card-value" id="national-debt">Loading API...</div>
@@ -190,11 +180,6 @@ const CONFIG = {
     annualRate: 0.063,
     baseTime: Date.now()
   },
-  usdInr: {
-    baseValue: 87.25,
-    ratePerSecond: 0.000001,
-    baseTime: Date.now()
-  },
   debt: {
     baseValue: 38950000000000,
     ratePerSecond: 85550,
@@ -226,30 +211,11 @@ function formatCurrency(value) {
   return "$" + Math.floor(value).toLocaleString('en-US');
 }
 
-function formatPortfolioCurrency(value) {
-  return "Hex" + value.toLocaleString('en-IN', { minimumFractionDigits: 6, maximumFractionDigits: 6 });
-}
-
 function formatNumber(value) {
   return Math.floor(value).toLocaleString('en-US');
 }
 
-function formatExchangeRate(value) {
-  return "₹" + value.toFixed(6);
-}
-
 async function fetchAllData() {
-  try {
-    const response = await fetch('https://open.er-api.com/v6/latest/USD');
-    const json = await response.json();
-    if (json && json.rates && json.rates.INR) {
-      CONFIG.usdInr.baseValue = json.rates.INR;
-      CONFIG.usdInr.baseTime = Date.now();
-      const dateObj = new Date(json.time_last_update_unix * 1000);
-      document.getElementById('exchange-date').textContent = "Official API Baseline: " + dateObj.toISOString().split('T')[0];
-    }
-  } catch (e) {}
-
   try {
     const response = await fetch('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?sort=-record_date&page[size]=1');
     const json = await response.json();
@@ -298,9 +264,6 @@ function updateClocks() {
   const yearsElapsed = (now - CONFIG.myPortfolio.baseTime) / (1000 * 60 * 60 * 24 * 365.25);
   const currentPortfolioValue = CONFIG.myPortfolio.baseValue * Math.exp(CONFIG.myPortfolio.annualRate * yearsElapsed);
 
-  const currencyElapsedSec = (now - CONFIG.usdInr.baseTime) / 1000;
-  const currentUsdInr = CONFIG.usdInr.baseValue + (currencyElapsedSec * CONFIG.usdInr.ratePerSecond);
-
   const debtElapsedSec = (now - CONFIG.debt.baseTime) / 1000;
   let currentDebt = CONFIG.debt.baseValue;
   if (debtElapsedSec > 0) {
@@ -319,8 +282,7 @@ function updateClocks() {
   const worldGdpElapsedSec = (now - CONFIG.worldGdp.baseTime) / 1000;
   const currentWorldGdp = CONFIG.worldGdp.baseValue + (worldGdpElapsedSec * CONFIG.worldGdp.ratePerSecond);
 
-  document.getElementById('shares-book-value').textContent = "₹" + currentPortfolioValue.toFixed(6);
-  document.getElementById('usd-inr').textContent = formatExchangeRate(currentUsdInr);
+  document.getElementById('shares-book-value').textContent = "₹" + currentPortfolioValue.toFixed(10);
   document.getElementById('national-debt').textContent = formatCurrency(currentDebt);
   document.getElementById('population').textContent = formatNumber(currentPop);
   document.getElementById('india-gdp').textContent = formatCurrency(currentIndiaGdp);
