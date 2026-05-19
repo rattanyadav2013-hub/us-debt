@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Real-Time Economic Clock</title>
+<title>Global Financial & Market Tracker</title>
 <style>
 * {
   box-sizing: border-box;
@@ -11,74 +11,143 @@
   padding: 0;
 }
 body {
-  background-color: #000;
+  background-color: #050505;
   color: #fff;
   font-family: monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 20px;
+  min-height: 100vh;
 }
 header {
   text-align: center;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #333;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #222;
   padding-bottom: 20px;
+  width: 100%;
+  max-width: 1400px;
 }
 h1 {
-  color: #de1f1f;
-  font-size: 2.5rem;
-  text-shadow: 0 0 10px rgba(222, 31, 31, 0.5);
+  color: #ffaa00;
+  font-size: 2.2rem;
+  text-shadow: 0 0 10px rgba(255, 170, 0, 0.3);
+  letter-spacing: 1px;
 }
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 20px;
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
 }
 .clock-card {
   background: #111;
-  border: 1px solid #333;
-  border-radius: 4px;
-  padding: 15px;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 20px;
   text-align: center;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+  box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
 }
 .card-title {
   font-size: 0.9rem;
-  color: #888;
+  color: #777;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   letter-spacing: 1px;
 }
 .card-value {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #00ff00;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+  color: #00ff66;
+  text-shadow: 0 0 5px rgba(0, 255, 102, 0.2);
   white-space: nowrap;
 }
 .debt .card-value {
-  color: #ff3333;
-  text-shadow: 0 0 5px rgba(255, 51, 51, 0.3);
+  color: #ff4444;
+  text-shadow: 0 0 5px rgba(255, 68, 68, 0.2);
 }
 .citizen .card-value {
-  color: #33b5e5;
-  text-shadow: 0 0 5px rgba(51, 181, 229, 0.3);
+  color: #00d2ff;
+  text-shadow: 0 0 5px rgba(0, 210, 255, 0.2);
+}
+.forex .card-value {
+  color: #ffcc00;
+  text-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+}
+.portfolio .card-value {
+  color: #e066ff;
+  text-shadow: 0 0 5px rgba(224, 102, 255, 0.2);
 }
 .source-tag {
   font-size: 0.7rem;
-  color: #555;
-  margin-top: 5px;
+  color: #444;
+  margin-top: 8px;
   display: block;
+}
+.ad-banner-top {
+  width: 100%;
+  max-width: 728px;
+  height: 90px;
+  background: #111;
+  border: 1px dashed #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  margin-bottom: 25px;
+}
+.ad-banner-bottom {
+  width: 100%;
+  max-width: 728px;
+  height: 90px;
+  background: #111;
+  border: 1px dashed #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #444;
+  font-size: 0.8rem;
+  border-radius: 6px;
+  margin-top: 30px;
+}
+@media (max-width: 768px) {
+  .ad-banner-top, .ad-banner-bottom {
+    height: 50px;
+    max-width: 320px;
+  }
+  h1 {
+    font-size: 1.6rem;
+  }
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>NATIONAL & GLOBAL ECONOMIC CLOCK</h1>
+  <h1>GLOBAL FINANCIAL & MARKET TRACKER</h1>
 </header>
 
+<div class="ad-banner-top">
+  <span>Advertisement Banner (Top)</span>
+</div>
+
 <main class="grid-container">
+  <div class="clock-card portfolio">
+    <div class="card-title">My Total Portfolio Book Value</div>
+    <div class="card-value" id="shares-book-value">Calculating...</div>
+    <span class="source-tag">Compounding Real-Time @ 6.30% p.a.</span>
+  </div>
+
+  <div class="clock-card forex">
+    <div class="card-title">USD to INR Exchange Rate</div>
+    <div class="card-value" id="usd-inr">Loading API...</div>
+    <span class="source-tag" id="exchange-date">Source: Forex API Baseline</span>
+  </div>
+
   <div class="clock-card debt">
     <div class="card-title">US National Debt</div>
     <div class="card-value" id="national-debt">Loading API...</div>
@@ -91,10 +160,10 @@ h1 {
     <span class="source-tag">Source: Census Estimate</span>
   </div>
 
-  <div class="clock-card debt">
-    <div class="card-title">US Debt Per Citizen</div>
-    <div class="card-value" id="debt-per-citizen">$0</div>
-    <span class="source-tag">Calculated Real-Time</span>
+  <div class="clock-card">
+    <div class="card-title">India Gross Domestic Product</div>
+    <div class="card-value" id="india-gdp">Loading API...</div>
+    <span class="source-tag" id="india-gdp-date">Source: World Bank API</span>
   </div>
 
   <div class="clock-card">
@@ -108,16 +177,24 @@ h1 {
     <div class="card-value" id="world-gdp">Loading API...</div>
     <span class="source-tag" id="world-gdp-date">Source: World Bank API</span>
   </div>
-
-  <div class="clock-card">
-    <div class="card-title">India Gross Domestic Product</div>
-    <div class="card-value" id="india-gdp">Loading API...</div>
-    <span class="source-tag" id="india-gdp-date">Source: World Bank API</span>
-  </div>
 </main>
+
+<div class="ad-banner-bottom">
+  <span>Advertisement Banner (Bottom)</span>
+</div>
 
 <script>
 const CONFIG = {
+  myPortfolio: {
+    baseValue: 1328.16,
+    annualRate: 0.063,
+    baseTime: Date.now()
+  },
+  usdInr: {
+    baseValue: 87.25,
+    ratePerSecond: 0.000001,
+    baseTime: Date.now()
+  },
   debt: {
     baseValue: 38950000000000,
     ratePerSecond: 85550,
@@ -126,6 +203,11 @@ const CONFIG = {
   population: {
     baseValue: 336200000,
     ratePerSecond: 0.05,
+    baseTime: new Date("2026-01-01T00:00:00Z").getTime()
+  },
+  indiaGdp: {
+    baseValue: 4150000000000,
+    ratePerSecond: 9200,
     baseTime: new Date("2026-01-01T00:00:00Z").getTime()
   },
   gdp: {
@@ -137,11 +219,6 @@ const CONFIG = {
     baseValue: 110000000000000,
     ratePerSecond: 185000,
     baseTime: new Date("2026-01-01T00:00:00Z").getTime()
-  },
-  indiaGdp: {
-    baseValue: 4150000000000,
-    ratePerSecond: 9200,
-    baseTime: new Date("2026-01-01T00:00:00Z").getTime()
   }
 };
 
@@ -149,11 +226,30 @@ function formatCurrency(value) {
   return "$" + Math.floor(value).toLocaleString('en-US');
 }
 
+function formatPortfolioCurrency(value) {
+  return "Hex" + value.toLocaleString('en-IN', { minimumFractionDigits: 6, maximumFractionDigits: 6 });
+}
+
 function formatNumber(value) {
   return Math.floor(value).toLocaleString('en-US');
 }
 
+function formatExchangeRate(value) {
+  return "₹" + value.toFixed(6);
+}
+
 async function fetchAllData() {
+  try {
+    const response = await fetch('https://open.er-api.com/v6/latest/USD');
+    const json = await response.json();
+    if (json && json.rates && json.rates.INR) {
+      CONFIG.usdInr.baseValue = json.rates.INR;
+      CONFIG.usdInr.baseTime = Date.now();
+      const dateObj = new Date(json.time_last_update_unix * 1000);
+      document.getElementById('exchange-date').textContent = "Official API Baseline: " + dateObj.toISOString().split('T')[0];
+    }
+  } catch (e) {}
+
   try {
     const response = await fetch('https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny?sort=-record_date&page[size]=1');
     const json = await response.json();
@@ -161,24 +257,9 @@ async function fetchAllData() {
       const officialRecord = json.data[0];
       const officialDebtAmt = parseFloat(officialRecord.tot_pub_debt_out_amt);
       const recordDateStr = officialRecord.record_date;
-      const recordTimeMs = new Date(recordDateStr + "T00:00:00Z").getTime();
-
       CONFIG.debt.baseValue = officialDebtAmt;
-      CONFIG.debt.baseTime = recordTimeMs;
+      CONFIG.debt.baseTime = new Date(recordDateStr + "T00:00:00Z").getTime();
       document.getElementById('debt-date').textContent = "Official API Baseline: " + recordDateStr;
-    }
-  } catch (e) {}
-
-  try {
-    const response = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=5');
-    const json = await response.json();
-    if (json && json[1]) {
-      const records = json[1].filter(entry => entry.value !== null);
-      if (records.length > 0) {
-        CONFIG.worldGdp.baseValue = records[0].value;
-        CONFIG.worldGdp.baseTime = new Date(records[0].date + "-01-01T00:00:00Z").getTime();
-        document.getElementById('world-gdp-date').textContent = "Official API Year: " + records[0].date;
-      }
     }
   } catch (e) {}
 
@@ -195,11 +276,30 @@ async function fetchAllData() {
     }
   } catch (e) {}
 
+  try {
+    const response = await fetch('https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?format=json&per_page=5');
+    const json = await response.json();
+    if (json && json[1]) {
+      const records = json[1].filter(entry => entry.value !== null);
+      if (records.length > 0) {
+        CONFIG.worldGdp.baseValue = records[0].value;
+        CONFIG.worldGdp.baseTime = new Date(records[0].date + "-01-01T00:00:00Z").getTime();
+        document.getElementById('world-gdp-date').textContent = "Official API Year: " + records[0].date;
+      }
+    }
+  } catch (e) {}
+
   updateClocks();
 }
 
 function updateClocks() {
   const now = Date.now();
+
+  const yearsElapsed = (now - CONFIG.myPortfolio.baseTime) / (1000 * 60 * 60 * 24 * 365.25);
+  const currentPortfolioValue = CONFIG.myPortfolio.baseValue * Math.exp(CONFIG.myPortfolio.annualRate * yearsElapsed);
+
+  const currencyElapsedSec = (now - CONFIG.usdInr.baseTime) / 1000;
+  const currentUsdInr = CONFIG.usdInr.baseValue + (currencyElapsedSec * CONFIG.usdInr.ratePerSecond);
 
   const debtElapsedSec = (now - CONFIG.debt.baseTime) / 1000;
   let currentDebt = CONFIG.debt.baseValue;
@@ -210,23 +310,22 @@ function updateClocks() {
   const popElapsedSec = (now - CONFIG.population.baseTime) / 1000;
   const currentPop = CONFIG.population.baseValue + (popElapsedSec * CONFIG.population.ratePerSecond);
 
+  const indiaGdpElapsedSec = (now - CONFIG.indiaGdp.baseTime) / 1000;
+  const currentIndiaGdp = CONFIG.indiaGdp.baseValue + (indiaGdpElapsedSec * CONFIG.indiaGdp.ratePerSecond);
+
   const gdpElapsedSec = (now - CONFIG.gdp.baseTime) / 1000;
   const currentGdp = CONFIG.gdp.baseValue + (gdpElapsedSec * CONFIG.gdp.ratePerSecond);
 
   const worldGdpElapsedSec = (now - CONFIG.worldGdp.baseTime) / 1000;
   const currentWorldGdp = CONFIG.worldGdp.baseValue + (worldGdpElapsedSec * CONFIG.worldGdp.ratePerSecond);
 
-  const indiaGdpElapsedSec = (now - CONFIG.indiaGdp.baseTime) / 1000;
-  const currentIndiaGdp = CONFIG.indiaGdp.baseValue + (indiaGdpElapsedSec * CONFIG.indiaGdp.ratePerSecond);
-
-  const debtPerCitizen = currentDebt / currentPop;
-
+  document.getElementById('shares-book-value').textContent = "₹" + currentPortfolioValue.toFixed(6);
+  document.getElementById('usd-inr').textContent = formatExchangeRate(currentUsdInr);
   document.getElementById('national-debt').textContent = formatCurrency(currentDebt);
   document.getElementById('population').textContent = formatNumber(currentPop);
-  document.getElementById('gdp').textContent = formatCurrency(currentGdp);
-  document.getElementById('debt-per-citizen').textContent = formatCurrency(debtPerCitizen);
-  document.getElementById('world-gdp').textContent = formatCurrency(currentWorldGdp);
   document.getElementById('india-gdp').textContent = formatCurrency(currentIndiaGdp);
+  document.getElementById('gdp').textContent = formatCurrency(currentGdp);
+  document.getElementById('world-gdp').textContent = formatCurrency(currentWorldGdp);
 
   requestAnimationFrame(updateClocks);
 }
